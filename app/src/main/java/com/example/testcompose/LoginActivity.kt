@@ -2,7 +2,9 @@
 
 package com.example.testcompose
 
+import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -42,8 +44,8 @@ class LoginActivity : ComponentActivity() {
 
 @Composable
 fun LoginScreen() {
-    var email by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
+    var email by remember { mutableStateOf("abc@gmail.com") }
+    var password by remember { mutableStateOf("123456") }
     var passwordVisible by remember { mutableStateOf(false) }
     var errorMessage by remember { mutableStateOf<String?>(null) }
     val context = LocalContext.current
@@ -53,6 +55,7 @@ fun LoginScreen() {
             TopAppBar(
                 title = { Text("Login") }
             )
+            Modifier.background(Color.Black)
         },
         content = { padding ->
             Box(
@@ -64,7 +67,7 @@ fun LoginScreen() {
                     modifier = Modifier
                         .padding(8.dp)
                         .clip(RoundedCornerShape(8.dp))
-                        .background(Color.White)
+                        .background(Color.Black)
                         .shadow(4.dp, RoundedCornerShape(8.dp))
                         .padding(16.dp)
                 ) {
@@ -80,7 +83,7 @@ fun LoginScreen() {
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(top = 23.dp),
-                            singleLine = true
+                            singleLine = true,
                         )
                         Spacer(modifier = Modifier.height(8.dp))
                         TextField(
@@ -103,7 +106,8 @@ fun LoginScreen() {
                         Spacer(modifier = Modifier.height(16.dp))
                         Button(
                             onClick = {
-                                if (email == "abc@gmail.com" && password == "123456") {
+                                if (email == getSavedEmail(context) && password == getSavedPassword(context) ||
+                                    email== "abc@gmail.com" && password == "123456") {
                                     errorMessage = "User is valid"
                                     val intent = Intent(context, MainActivity::class.java)
                                     context.startActivity(intent)
@@ -129,10 +133,40 @@ fun LoginScreen() {
     )
 }
 
+
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 fun LoginScreenPreview() {
     TestcomposeTheme {
         LoginScreen()
     }
+}
+
+private const val PREF_EMAIL = "email"
+private const val PREF_PASSWORD = "password"
+
+fun saveEmail(context: Context, email: String) {
+    val sharedPref = context.getSharedPreferences("my_prefs", Context.MODE_PRIVATE)
+    with (sharedPref.edit()) {
+        putString(PREF_EMAIL, email)
+        apply()
+    }
+}
+
+fun savePassword(context: Context, password: String) {
+    val sharedPref = context.getSharedPreferences("my_prefs", Context.MODE_PRIVATE)
+    with (sharedPref.edit()) {
+        putString(PREF_PASSWORD, password)
+        apply()
+    }
+}
+
+fun getSavedEmail(context: Context): String? {
+    val sharedPref = context.getSharedPreferences("my_prefs", Context.MODE_PRIVATE)
+    return sharedPref.getString(PREF_EMAIL, null)
+}
+
+fun getSavedPassword(context: Context): String? {
+    val sharedPref = context.getSharedPreferences("my_prefs", Context.MODE_PRIVATE)
+    return sharedPref.getString(PREF_PASSWORD, null)
 }
