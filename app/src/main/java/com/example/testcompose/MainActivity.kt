@@ -27,6 +27,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.vectorResource
@@ -276,7 +277,7 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
-
+    @Preview(showBackground = true, showSystemUi = true)
     @Composable
     fun SearchScreen() {
         Column(
@@ -317,21 +318,31 @@ class MainActivity : ComponentActivity() {
             Text("Genres", color = Color.White, fontSize = 20.sp, modifier = Modifier.padding(bottom = 8.dp))
             Row {
                 GenreButton("Nation", Color(0xFF00897B))
-                Spacer(modifier = Modifier.width(16.dp))
+                Spacer(modifier = Modifier.width(30.dp).height(60.dp))
                 GenreButton("Career", Color(0xFF512DA8))
             }
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(20.dp))
 
             // Trending Section
             Text("Trending", color = Color.White, fontSize = 20.sp, modifier = Modifier.padding(bottom = 8.dp))
-            Column {
-                TrendingItem("Lesson 10 - National security in the modern age")
-                TrendingItem("Lesson 8 - Dharmonomics")
-                TrendingItem("Advertising")
-                TrendingItem("Lesson 3 - Bias in AI – the COMPAS case study - pa")
-                TrendingItem("Design Thinking in Netflix _ Case Studio - 04")
-                TrendingItem("Actor Vipin Sharma")
+
+            // Make the trending items scrollable
+            LazyColumn {
+                items(listOf(
+                    "Lesson 10 - National security in the modern age",
+                    "Lesson 8 - Dharmonomics",
+                    "Advertising",
+                    "Lesson 3 - Bias in AI – the COMPAS case study - pa",
+                    "Design Thinking in Netflix _ Case Studio - 04",
+                    "Actor Vipin Sharma",
+                    "Actor Raman Mishra",
+                    "Welcome In india",
+                    "King Kong Poster",
+                    "Its coool..."
+                )) { item ->
+                    TrendingItem(item)
+                }
             }
         }
     }
@@ -363,15 +374,19 @@ class MainActivity : ComponentActivity() {
         ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Image(
-                    painter = painterResource(id = R.drawable.i4),
+                    painter = painterResource(id = R.drawable.i5),
                     contentDescription = text,
-                    modifier = Modifier.size(width = 70.dp, height = 30.dp)
+                    modifier = Modifier
+                        .width(120.dp)
+                        .height(60.dp),
+                    contentScale = ContentScale.FillWidth // Adjust as needed (e.g., FillBounds, Fit, Crop, etc.)
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(text, color = Color.White, fontSize = 16.sp)
             }
         }
     }
+
 
     @Composable
     fun MoreScreen() {
@@ -412,7 +427,7 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
-    @Preview(showBackground = true, showSystemUi = true)
+
     @Composable
     fun MainScreenPreview() {
         TestcomposeTheme {
